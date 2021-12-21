@@ -1,0 +1,82 @@
+--Paola Perez Valencia
+--Assessment Backend SQL
+
+--1 . Create 2 data table in SQLExpress (SQL senteces)
+CREATE TABLE Languages(
+    LanguageID int NOT NULL AUTO_INCREMENT,
+    Name varchar(50),
+    PRIMARY KEY (LanguageID)
+);
+CREATE TABLE Countries(
+    CountryID int NOT NULL AUTO_INCREMENT,
+    Name varchar(50),
+    Capital varchar(50),
+    Population int,
+    LanguageID int,
+    PRIMARY KEY (CountryID),
+    FOREIGN KEY (LanguageID) REFERENCES Languages(LanguageID)
+);
+
+--2. Insert 2 records in each table (SQL senteces)
+INSERT INTO Languages(Name) VALUES ("English");
+INSERT INTO Languages(Name) VALUES ("French");
+
+INSERT INTO Countries(Name, Capital, Population, LanguageID) VALUES ("United States","Washington DC", 329500, 1);
+INSERT INTO Countries(Name, Capital, Population, LanguageID) VALUES ("Francia","Paris", 673900, 2);
+
+--3. update the first record the population field by 250000 (SQL senteces)
+UPDATE Countries SET Population = 250000 WHERE CountryID = 1;
+
+--4. Delete countries with populations greater than 100,000 (SQL senteces)
+DELETE FROM Countries 
+WHERE Population > 100000;
+
+--5. Create SQLSentence  joining the 2 tables.
+SELECT *
+FROM Countries c JOIN Languages l 
+ON c.LanguageID = l.LanguageID;
+
+--6. Create SQL Sentence  grouping  by Languages.
+SELECT COUNT(c.CountryID), l.name 
+FROM Countries c JOIN Languages l 
+ON c.LanguageID = l.LanguageID 
+GROUP BY l.LanguageID;
+
+--7. Create Store Procedures (Insert,Update,Delete,Select all) 
+--7.1 Insert
+
+CREATE PROCEDURE InsertCountry @Name varchar(50), @Capital varchar(50), @Population int, @LanguageID int
+AS
+INSERT INTO Countries(Name, Capital, Population, LanguageID) VALUES (@Name, @Capital, @Population, @LanguageID)
+GO;
+
+--7.2 Update
+CREATE PROCEDURE UpdateCountryPopulation @CountryID int, @Population int
+AS
+UPDATE Countries SET Population = @Population
+WHERE CountryID = @CountryID;
+
+CREATE PROCEDURE UpdateLanguageName @LanguageID int, @Name varchar(50)
+AS
+UPDATE Languages SET Name = @Name
+WHERE LanguageID = @LanguageID;
+
+--7.3 Delete
+CREATE PROCEDURE DeleteCountry @CountryID int 
+AS
+DELETE FROM Countries WHERE CountryID = @CountryID
+
+CREATE PROCEDURE DeleteLanguage @LanguageID int 
+AS
+DELETE FROM Languages WHERE LanguageID = @LanguageID
+
+--7.4 Select All
+CREATE PROCEDURE SelectAllCountries
+AS
+SELECT * FROM Countries
+GO;
+
+CREATE PROCEDURE SelectAllLanguages
+AS
+SELECT * FROM Languages
+GO;
